@@ -25,7 +25,10 @@ public class UserDBHelper extends SQLiteOpenHelper {
     public static final String COL_PATIENT_AGE = "age";
     public static final String COL_PATIENT_GENDER = "gender";
 
-
+    public static final String TABLE_NAME_DOCTORS = "doctors";
+    public static final String COL_DOCTOR_ID = "doctor_id";
+    public static final String COL_DOCTOR_NAME = "name";
+    public static final String COL_DOCTOR_SPECIALTY = "specialty";
 
 
     public UserDBHelper(Context context) {
@@ -36,6 +39,7 @@ public class UserDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME_USERS + " (username TEXT primary key, password TEXT, salt TEXT)");
         db.execSQL("create table " + TABLE_NAME_PATIENTS + " (" + COL_PATIENT_ID + " INTEGER primary key AUTOINCREMENT, " + COL_PATIENT_NAME + " TEXT, " + COL_PATIENT_AGE + " INTEGER, " + COL_PATIENT_GENDER + " TEXT)");
+        db.execSQL("create table " + TABLE_NAME_DOCTORS + " (" + COL_DOCTOR_ID + " INTEGER primary key AUTOINCREMENT, name TEXT, specialty TEXT)");
 
     }
 
@@ -43,6 +47,7 @@ public class UserDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_PATIENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_DOCTORS);
         onCreate(db);
     }
 
@@ -125,5 +130,29 @@ public class UserDBHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME_PATIENTS, null);
     }
 
-
+    public boolean insertDoctor(String name, String specialty) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_DOCTOR_NAME, name);
+        contentValues.put(COL_DOCTOR_SPECIALTY, specialty);
+        long result = db.insert(TABLE_NAME_DOCTORS, null, contentValues);
+        return result != -1;
+    }
+    public boolean updateDoctor(String oldName, String newName, String specialty) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_DOCTOR_NAME, newName);
+        contentValues.put(COL_DOCTOR_SPECIALTY, specialty);
+        int result = db.update(TABLE_NAME_DOCTORS, contentValues, COL_DOCTOR_NAME + " = ?", new String[]{oldName});
+        return result > 0;
+    }
+    public boolean deleteDoctor(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_NAME_DOCTORS, COL_DOCTOR_NAME + " = ?", new String[]{name});
+        return result > 0;
+    }
+    public Cursor getDoctors() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME_DOCTORS, null);
+    }
 }
