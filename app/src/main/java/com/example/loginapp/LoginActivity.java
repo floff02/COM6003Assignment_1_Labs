@@ -34,15 +34,19 @@ public class LoginActivity extends AppCompatActivity {
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             } else {
-
-                boolean checkUser = userDbHelper.checkUser(username, password);
-                Log.d("LoginActivity", "Check user result: " + checkUser);
-                if (checkUser) {
-                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, LandingPage.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Login failed. Invalid credentials", Toast.LENGTH_SHORT).show();
+                try {
+                    boolean checkUser = userDbHelper.checkUser(username, password);
+                    Log.d("LoginActivity", "Check user result: " + checkUser);
+                    if (checkUser) {
+                        Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, LandingPage.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Login failed. Invalid credentials", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e("LoginActivity", "Error while logging in: " + e.getMessage());
+                    Toast.makeText(LoginActivity.this, "An unexpected error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

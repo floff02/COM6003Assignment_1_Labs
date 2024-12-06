@@ -13,6 +13,9 @@
         android:theme="@style/Theme.LoginApp"
         tools:targetApi="31">
         <activity
+            android:name=".AppointmentManagementActivity"
+            android:exported="false" />
+        <activity
             android:name=".DoctorManagementActivity"
             android:exported="false" />
         <activity

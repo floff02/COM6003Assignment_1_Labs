@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LoginApp</string>
+    <string name="select_patient">Select Patient</string>
+    <string name="select_doctor">Select Doctor</string>
 </resources>

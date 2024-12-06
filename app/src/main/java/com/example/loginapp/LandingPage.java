@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class LandingPage extends AppCompatActivity {
-    Button Patientbutton, Doctorbutton;
+    Button Patientbutton, Doctorbutton, Appointmentbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +16,7 @@ public class LandingPage extends AppCompatActivity {
         setContentView(R.layout.activity_landing_page);
         Patientbutton = findViewById(R.id.Patientbutton);
         Doctorbutton = findViewById(R.id.Doctorbutton);
+        Appointmentbutton = findViewById(R.id.Appointmentbutton);
 
         Patientbutton.setOnClickListener(view -> {
             Intent intent = new Intent(LandingPage.this, PatientManagementActivity.class);
@@ -24,6 +25,11 @@ public class LandingPage extends AppCompatActivity {
 
         Doctorbutton.setOnClickListener(view -> {
             Intent intent = new Intent(LandingPage.this, DoctorManagementActivity.class);
+            startActivity(intent);
+        });
+
+        Appointmentbutton.setOnClickListener(view -> {
+            Intent intent = new Intent(LandingPage.this, AppointmentManagementActivity.class);
             startActivity(intent);
         });
     }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.Cursor;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,21 +40,26 @@ public class PatientManagementActivity extends AppCompatActivity {
         loadPatients();
 
         btnAddPatient.setOnClickListener(view -> {
-            String name = etPatientName.getText().toString();
-            String ageStr = etPatientAge.getText().toString();
-            String gender = etPatientGender.getText().toString();
+            try {
+                String name = etPatientName.getText().toString();
+                String ageStr = etPatientAge.getText().toString();
+                String gender = etPatientGender.getText().toString();
 
-            if (name.isEmpty() || ageStr.isEmpty() || gender.isEmpty()) {
-                Toast.makeText(PatientManagementActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-            } else {
-                int age = Integer.parseInt(ageStr);
-                boolean insert = userDbHelper.insertPatient(name, age, gender);
-                if (insert) {
-                    Toast.makeText(PatientManagementActivity.this, "Patient added successfully", Toast.LENGTH_SHORT).show();
-                    loadPatients();
+                if (name.isEmpty() || ageStr.isEmpty() || gender.isEmpty()) {
+                    Toast.makeText(PatientManagementActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(PatientManagementActivity.this, "Failed to add patient", Toast.LENGTH_SHORT).show();
+                    int age = Integer.parseInt(ageStr);
+                    boolean insert = userDbHelper.insertPatient(name, age, gender);
+                    if (insert) {
+                        Toast.makeText(PatientManagementActivity.this, "Patient added successfully", Toast.LENGTH_SHORT).show();
+                        loadPatients();
+                    } else {
+                        Toast.makeText(PatientManagementActivity.this, "Failed to add patient", Toast.LENGTH_SHORT).show();
+                    }
                 }
+            } catch (Exception e) {
+                Log.e("PatientManagementActivity", "Error while adding patient: " + e.getMessage());
+                Toast.makeText(PatientManagementActivity.this, "An unexpected error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -71,21 +77,26 @@ public class PatientManagementActivity extends AppCompatActivity {
             btnAddPatient.setText("Update Patient");
 
             btnAddPatient.setOnClickListener(v -> {
-                String newName = etPatientName.getText().toString();
-                String newAgeStr = etPatientAge.getText().toString();
-                String newGender = etPatientGender.getText().toString();
+                try {
+                    String newName = etPatientName.getText().toString();
+                    String newAgeStr = etPatientAge.getText().toString();
+                    String newGender = etPatientGender.getText().toString();
 
-                if (newName.isEmpty() || newAgeStr.isEmpty() || newGender.isEmpty()) {
-                    Toast.makeText(PatientManagementActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                } else {
-                    int newAge = Integer.parseInt(newAgeStr);
-                    boolean update = userDbHelper.updatePatient(name, newName, newAge, newGender);
-                    if (update) {
-                        Toast.makeText(PatientManagementActivity.this, "Patient updated successfully", Toast.LENGTH_SHORT).show();
-                        loadPatients();
+                    if (newName.isEmpty() || newAgeStr.isEmpty() || newGender.isEmpty()) {
+                        Toast.makeText(PatientManagementActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(PatientManagementActivity.this, "Failed to update patient", Toast.LENGTH_SHORT).show();
+                        int newAge = Integer.parseInt(newAgeStr);
+                        boolean update = userDbHelper.updatePatient(name, newName, newAge, newGender);
+                        if (update) {
+                            Toast.makeText(PatientManagementActivity.this, "Patient updated successfully", Toast.LENGTH_SHORT).show();
+                            loadPatients();
+                        } else {
+                            Toast.makeText(PatientManagementActivity.this, "Failed to update patient", Toast.LENGTH_SHORT).show();
+                        }
                     }
+                } catch (Exception e) {
+                    Log.e("PatientManagementActivity", "Error while updating patient: " + e.getMessage());
+                    Toast.makeText(PatientManagementActivity.this, "An unexpected error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -97,53 +108,58 @@ public class PatientManagementActivity extends AppCompatActivity {
             new AlertDialog.Builder(PatientManagementActivity.this)
                     .setTitle("Select Action")
                     .setItems(new CharSequence[]{"Update", "Delete"}, (dialog, which) -> {
-                        switch (which) {
-                            case 0: // Update
-                                String[] details = patientDetails.split("\\n");
-                                String age = details[1].split(": ")[1];
-                                String gender = details[2].split(": ")[1];
+                        try {
+                            switch (which) {
+                                case 0: // Update
+                                    String[] details = patientDetails.split("\\n");
+                                    String age = details[1].split(": ")[1];
+                                    String gender = details[2].split(": ")[1];
 
-                                etPatientName.setText(name);
-                                etPatientAge.setText(age);
-                                etPatientGender.setText(gender);
+                                    etPatientName.setText(name);
+                                    etPatientAge.setText(age);
+                                    etPatientGender.setText(gender);
 
-                                btnAddPatient.setText("Update Patient");
+                                    btnAddPatient.setText("Update Patient");
 
-                                btnAddPatient.setOnClickListener(v -> {
-                                    String newName = etPatientName.getText().toString();
-                                    String newAgeStr = etPatientAge.getText().toString();
-                                    String newGender = etPatientGender.getText().toString();
+                                    btnAddPatient.setOnClickListener(v -> {
+                                        String newName = etPatientName.getText().toString();
+                                        String newAgeStr = etPatientAge.getText().toString();
+                                        String newGender = etPatientGender.getText().toString();
 
-                                    if (newName.isEmpty() || newAgeStr.isEmpty() || newGender.isEmpty()) {
-                                        Toast.makeText(PatientManagementActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        int newAge = Integer.parseInt(newAgeStr);
-                                        boolean update = userDbHelper.updatePatient(name, newName, newAge, newGender);
-                                        if (update) {
-                                            Toast.makeText(PatientManagementActivity.this, "Patient updated successfully", Toast.LENGTH_SHORT).show();
-                                            loadPatients();
+                                        if (newName.isEmpty() || newAgeStr.isEmpty() || newGender.isEmpty()) {
+                                            Toast.makeText(PatientManagementActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(PatientManagementActivity.this, "Failed to update patient", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                                break;
-                            case 1: // Delete
-                                new AlertDialog.Builder(PatientManagementActivity.this)
-                                        .setTitle("Delete Patient")
-                                        .setMessage("Are you sure you want to delete this patient?")
-                                        .setPositiveButton("Yes", (dialogInterface, j) -> {
-                                            boolean delete = userDbHelper.deletePatient(name);
-                                            if (delete) {
-                                                Toast.makeText(PatientManagementActivity.this, "Patient deleted successfully", Toast.LENGTH_SHORT).show();
+                                            int newAge = Integer.parseInt(newAgeStr);
+                                            boolean update = userDbHelper.updatePatient(name, newName, newAge, newGender);
+                                            if (update) {
+                                                Toast.makeText(PatientManagementActivity.this, "Patient updated successfully", Toast.LENGTH_SHORT).show();
                                                 loadPatients();
                                             } else {
-                                                Toast.makeText(PatientManagementActivity.this, "Failed to delete patient", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(PatientManagementActivity.this, "Failed to update patient", Toast.LENGTH_SHORT).show();
                                             }
-                                        })
-                                        .setNegativeButton("No", null)
-                                        .show();
-                                break;
+                                        }
+                                    });
+                                    break;
+                                case 1: // Delete
+                                    new AlertDialog.Builder(PatientManagementActivity.this)
+                                            .setTitle("Delete Patient")
+                                            .setMessage("Are you sure you want to delete this patient?")
+                                            .setPositiveButton("Yes", (dialogInterface, j) -> {
+                                                boolean delete = userDbHelper.deletePatient(name);
+                                                if (delete) {
+                                                    Toast.makeText(PatientManagementActivity.this, "Patient deleted successfully", Toast.LENGTH_SHORT).show();
+                                                    loadPatients();
+                                                } else {
+                                                    Toast.makeText(PatientManagementActivity.this, "Failed to delete patient", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .setNegativeButton("No", null)
+                                            .show();
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            Log.e("PatientManagementActivity", "Error while Updating/Deleting Patients: " + e.getMessage());
+                            Toast.makeText(PatientManagementActivity.this, "An unexpected error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .show();
@@ -152,16 +168,21 @@ public class PatientManagementActivity extends AppCompatActivity {
     }
 
     private void loadPatients() {
-        patientList.clear();
-        Cursor cursor = userDbHelper.getPatients();
-        if (cursor.moveToFirst()) {
-            do {
-                String name = cursor.getString(cursor.getColumnIndexOrThrow(UserDBHelper.COL_PATIENT_NAME));
-                int age = cursor.getInt(cursor.getColumnIndexOrThrow(UserDBHelper.COL_PATIENT_AGE));
-                String gender = cursor.getString(cursor.getColumnIndexOrThrow(UserDBHelper.COL_PATIENT_GENDER));
-                patientList.add("Name: " + name + "\nAge: " + age + "\nGender: " + gender);
-            } while (cursor.moveToNext());
+        try {
+            patientList.clear();
+            Cursor cursor = userDbHelper.getPatients();
+            if (cursor.moveToFirst()) {
+                do {
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow(UserDBHelper.COL_PATIENT_NAME));
+                    int age = cursor.getInt(cursor.getColumnIndexOrThrow(UserDBHelper.COL_PATIENT_AGE));
+                    String gender = cursor.getString(cursor.getColumnIndexOrThrow(UserDBHelper.COL_PATIENT_GENDER));
+                    patientList.add("Name: " + name + "\nAge: " + age + "\nGender: " + gender);
+                } while (cursor.moveToNext());
+            }
+            patientAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            Log.e("PatientManagementActivity", "Error while loading Patients: " + e.getMessage());
+            Toast.makeText(PatientManagementActivity.this, "An unexpected error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
         }
-        patientAdapter.notifyDataSetChanged();
     }
 }
